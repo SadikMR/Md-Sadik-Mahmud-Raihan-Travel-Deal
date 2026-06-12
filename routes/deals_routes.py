@@ -1,6 +1,6 @@
 import logging
 from flask import Blueprint, request, jsonify
-from services.deals_services import create_deal, get_all_deals
+from services.deals_services import create_deal, get_all_deals, get_deal_by_id
 from utils.responses import error_response, success_response
 from utils.validation import validate_deal_data
 
@@ -58,9 +58,30 @@ def get_deals():
     API Endpoint to retrieve all travel deals.
     """
     try:
+        # Retrieve all deals using the service layer
         deals = get_all_deals()
-        return success_response(data=deals, message="Deals retrieved successfully", status_code=200)
+        return success_response(deals, "Deals retrieved successfully", 200)
     
     except Exception as e:
         logger.error(f"Error in get_deals endpoint: {str(e)}")
-        return error_response(message="An error occurred while retrieving the deals", status_code=500)
+        return error_response("An error occurred while retrieving the deals", 500)
+    
+    
+
+# API Endpoint to retrieve a specific travel deal by ID
+@deal_bp.route("/<int:deal_id>", methods=["GET"])
+def get_deal(deal_id):
+    """
+    API Endpoint to retrieve a specific travel deal by ID.
+    """
+    try:
+        # Retrieve the deal using the service layer
+        deal = get_deal_by_id(deal_id)
+        if not deal:
+            return error_response("Deal not found", 404)
+        
+        return success_response(deal, "Deal retrieved successfully", 200)
+    
+    except Exception as e:
+        logger.error(f"Error in get_deal endpoint: {str(e)}")
+        return error_response("An error occurred while retrieving the deal", 500)
