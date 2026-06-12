@@ -1,0 +1,91 @@
+{
+	"info": {
+		"_postman_id": "20ced9a1-6a96-4d25-82c6-65cff1d454d5",
+		"name": "Travel-Deals",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "54705650",
+		"_collection_link": "https://www.postman.com/sadikmr-6504980/workspace/travel-deal/collection/54705650-20ced9a1-6a96-4d25-82c6-65cff1d454d5?action=share&source=collection_link&creator=54705650"
+	},
+	"item": [
+		{
+			"name": "Create_Deals",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"destination\": \"Dubai\",\n\"price\": 5000,\n\"platform\": \"Booking\",\n\"rating\": 4.5,\n\"travel_type\": \"Luxury\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/deals",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"deals"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get_All_Deals",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/deals/7",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"deals",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get_Single_Deal",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/deals/7",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"deals",
+						"7"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

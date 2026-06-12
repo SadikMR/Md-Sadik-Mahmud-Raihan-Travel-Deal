@@ -6,6 +6,10 @@ A Flask-based REST API for managing and retrieving travel deals. This applicatio
 
 GitHub: [https://github.com/SadikMR/travel-deal](https://github.com/SadikMR/travel-deal)
 
+## Postman Collection
+
+Postman: https://www.postman.com/sadikmr-6504980/workspace/travel-deal/collection/54705650-20ced9a1-6a96-4d25-82c6-65cff1d454d5?action=share&source=copy-link&creator=54705650
+
 ## Features
 
 - **Add Travel Deals**: Create new travel deals with destination, price, platform, rating, and travel type
