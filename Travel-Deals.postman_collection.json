@@ -50,15 +50,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/deals/7",
+					"raw": "http://localhost:5000/deals",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5000",
 					"path": [
-						"deals",
-						"7"
+						"deals"
 					]
 				}
 			},
