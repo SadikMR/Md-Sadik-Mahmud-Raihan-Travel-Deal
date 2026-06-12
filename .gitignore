@@ -1,0 +1,15 @@
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# Database
+employees.db
+*.sqlite3
+
+# Environment Variables (for future security)
+.env
