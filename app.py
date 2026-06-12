@@ -2,7 +2,7 @@ import logging
 from flask import Flask
 from config import Config
 from database.db import db
-from database.models import TravelDeal
+from database.deals_models import TravelDeal
 from routes.deals_routes import deal_bp
 
 

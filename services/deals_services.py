@@ -1,6 +1,6 @@
 import logging
 from database.db import db
-from database.models import TravelDeal
+from database.deals_models import TravelDeal
 
 def create_deal(data):
     """
