@@ -1,15 +1,40 @@
-# Virtual Environment
+# Virtual Environments
 .venv/
 venv/
 env/
+ENV/
 
-# Python Cache
+# Python Cache & Testing
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
 
-# Database
+# Databases
 employees.db
+*.db
+*.sqlite
 *.sqlite3
+*.db3
 
-# Environment Variables (for future security)
+# Environment Variables & Secrets
 .env
+.env.local
+.env.development.local
+*.pem
+secrets.json
+
+# Logs
+*.log
+pip-log.txt
+pip-delete-this-directory.txt
+
+# OS & Editor Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
