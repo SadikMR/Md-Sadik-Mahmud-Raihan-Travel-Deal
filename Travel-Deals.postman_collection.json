@@ -2,6 +2,7 @@
 	"info": {
 		"_postman_id": "20ced9a1-6a96-4d25-82c6-65cff1d454d5",
 		"name": "Travel-Deals",
+		"description": "## Travel Deals API\n\nThis collection provides a set of RESTful API endpoints for managing travel deals. It is designed to support core CRUD operations against a local Travel Deals service running at `http://localhost:5000`.\n\n### Endpoints Included\n\n- **Create a Deal** — `POST /deals`  \n  Submit a new travel deal to the system.\n\n- **Get All Deals** — `GET /deals`  \n  Retrieve a complete list of all available travel deals.\n\n- **Get a Single Deal** — `GET /deals/:id`  \n  Fetch the details of a specific travel deal by its unique identifier.\n\n### Usage\n\nUse this collection to develop, test, and validate the Travel Deals API during local development. Ensure the server is running on `http://localhost:5000` before sending requests.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "54705650",
 		"_collection_link": "https://www.postman.com/sadikmr-6504980/workspace/travel-deal/collection/54705650-20ced9a1-6a96-4d25-82c6-65cff1d454d5?action=share&source=collection_link&creator=54705650"
@@ -37,12 +38,22 @@
 					"path": [
 						"deals"
 					]
-				}
+				},
+				"description": "Endpoint for creating deals"
 			},
 			"response": []
 		},
 		{
-			"name": "Get_All_Deals",
+			"name": "Get All Deals",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"description": "Endpoint for fetching all deals"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Single Deal",
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -50,29 +61,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/deals",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5000",
-					"path": [
-						"deals"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get_Single_Deal",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:5000/deals/7",
+					"raw": "http://localhost:5000/deals/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -80,9 +69,128 @@
 					"port": "5000",
 					"path": [
 						"deals",
-						"7"
+						"1"
 					]
-				}
+				},
+				"description": "Get specific deal by id"
+			},
+			"response": []
+		},
+		{
+			"name": "Search Deal",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/deals/search?destination=dha&platform=bk&travel_type=fam",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"deals",
+						"search"
+					],
+					"query": [
+						{
+							"key": "destination",
+							"value": "dha"
+						},
+						{
+							"key": "platform",
+							"value": "bk"
+						},
+						{
+							"key": "travel_type",
+							"value": "fam"
+						}
+					]
+				},
+				"description": "Endpoint for searching. It supports partial searching"
+			},
+			"response": []
+		},
+		{
+			"name": "Filter Deal",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/deals/filter?min_price=1&max_price=10000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"deals",
+						"filter"
+					],
+					"query": [
+						{
+							"key": "min_price",
+							"value": "1"
+						},
+						{
+							"key": "max_price",
+							"value": "10000"
+						}
+					]
+				},
+				"description": "Filter based on price range"
+			},
+			"response": []
+		},
+		{
+			"name": "Sort Deal",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/deals/sort?sort_by=price&order_by=desc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"deals",
+						"sort"
+					],
+					"query": [
+						{
+							"key": "sort_by",
+							"value": "price"
+						},
+						{
+							"key": "order_by",
+							"value": "desc"
+						}
+					]
+				},
+				"description": "Sort deals based on price and order"
+			},
+			"response": []
+		},
+		{
+			"name": "Recen Viewed Deals",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/deals/recent",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"deals",
+						"recent"
+					]
+				},
+				"description": "Fetches recent viewed deals"
 			},
 			"response": []
 		}
