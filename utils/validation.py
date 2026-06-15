@@ -1,3 +1,4 @@
+# validation functions for validating incoming data for creating and updating deals.
 def validate_deal_data(data):
     """
     Validates the incoming deal data.
@@ -30,3 +31,34 @@ def validate_deal_data(data):
     
     return True, None
     
+
+
+# Additional validation functions can be added here as needed, such as validating query parameters for filtering or searching deals.
+def validate_filter_params(min_price, max_price):
+    """
+    Validates the filter parameters for price.
+    Returns a tuple (is_valid, message) where:
+    - is_valid: True if parameters are valid, False otherwise
+    - message: Error message if parameters are invalid, None otherwise
+    """
+    
+    if min_price is not None:
+        try:
+            min_price = float(min_price)
+            if min_price < 0:
+                return False, "min_price must be a non-negative number"
+        except ValueError:
+            return False, "min_price must be a valid number"
+    
+    if max_price is not None:
+        try:
+            max_price = float(max_price)
+            if max_price < 0:
+                return False, "max_price must be a non-negative number"
+        except ValueError:
+            return False, "max_price must be a valid number"
+    
+    if min_price is not None and max_price is not None and min_price > max_price:
+        return False, "min_price cannot be greater than max_price"
+    
+    return True, None

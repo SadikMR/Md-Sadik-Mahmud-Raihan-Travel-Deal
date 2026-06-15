@@ -110,3 +110,26 @@ def search_deal(destination=None, platform=None, travel_type=None):
     except Exception as e:
         logging.error(f"Error searching deals: {e}")
         raise
+
+
+def filter_deals_by_price(min_price=None, max_price=None):
+    try:
+        query = TravelDeal.query
+
+        if min_price is not None:
+            query = query.filter(TravelDeal.price >= min_price)
+
+        if max_price is not None:
+            query = query.filter(TravelDeal.price <= max_price)
+
+        results = query.all()
+
+        logging.info(
+            f"Filter completed. Found {len(results)} deals. "
+            f"min_price={min_price}, max_price={max_price}"
+        )
+        return [deal.to_dict() for deal in results]
+
+    except Exception as e:
+        logging.error(f"Error filtering deals: {e}")
+        raise
