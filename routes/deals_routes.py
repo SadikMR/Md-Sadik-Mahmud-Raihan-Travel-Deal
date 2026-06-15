@@ -1,12 +1,10 @@
 import logging
 from flask import Blueprint, request, jsonify
-from services.deals_services import create_deal, get_all_deals, get_deal_by_id
+from services.deals_services import create_deal, get_all_deals, get_deal_by_id, search_deal
 from utils.responses import error_response, success_response
 from utils.validation import validate_deal_data
 
 deal_bp = Blueprint("deals", __name__) 
-
-logger = logging.getLogger(__name__)
 
 # API Endpoint to add a new travel deal
 @deal_bp.route("", methods=["POST"])
@@ -38,7 +36,7 @@ def add_deal():
         is_valid, validation_message = validate_deal_data(data)
 
         if not is_valid:
-            logger.warning(f"Validation failed: {validation_message}")
+            logging.warning(f"Validation failed: {validation_message}")
             return error_response(validation_message, 400)
         
         # Create the deal using the service layer
@@ -46,7 +44,6 @@ def add_deal():
         return success_response(new_deal, 201)
     
     except Exception as e:
-        logger.error(f"Error in add_deal endpoint: {str(e)}")
         return error_response("An error occurred while adding the deal", 500) 
     
 
@@ -63,7 +60,6 @@ def get_deals():
         return success_response(deals, "Deals retrieved successfully", 200)
     
     except Exception as e:
-        logger.error(f"Error in get_deals endpoint: {str(e)}")
         return error_response("An error occurred while retrieving the deals", 500)
     
     
@@ -83,5 +79,31 @@ def get_deal(deal_id):
         return success_response(deal, "Deal retrieved successfully", 200)
     
     except Exception as e:
-        logger.error(f"Error in get_deal endpoint: {str(e)}")
         return error_response("An error occurred while retrieving the deal", 500)
+    
+
+@deal_bp.route("/search", methods=["GET"])
+def search_deals():
+    """
+    API Endpoint to search for travel deals based on destination, platform, or travel type.
+    Query parameters:
+        - destination (optional): search by destination
+        - platform (optional): search by platform
+        - travel_type (optional): search by travel type
+    """
+    try:
+        destination = request.args.get("destination", "").strip()
+        platform = request.args.get("platform", "").strip()
+        travel_type = request.args.get("travel_type", "").strip()
+
+        if not destination and not platform and not travel_type:
+            logging.warning("Empty search request")
+            return error_response("At least one search parameter (destination, platform, travel_type) must be provided", 400)
+
+        # Call the search service function with the provided query parameters
+        deals = search_deal(destination, platform, travel_type)
+
+        return success_response(deals, "searching deals retrieved successfully", 200)
+    
+    except Exception as e:
+        return error_response("An error occurred while searching for deals", 500)

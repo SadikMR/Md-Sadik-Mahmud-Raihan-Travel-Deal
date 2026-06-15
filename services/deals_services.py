@@ -43,6 +43,8 @@ def get_all_deals():
 
         for deal in deals:
             deal_list.append(deal.to_dict())
+        
+        logging.info(f"Retrieved {len(deal_list)} deals from the database")
 
         return deal_list
     
@@ -64,10 +66,47 @@ def get_deal_by_id(deal_id):
         deal = TravelDeal.query.get(deal_id)
 
         if deal:
+            logging.info(f"Retrieved deal by ID {deal_id}: {deal.to_dict()}")
             return deal.to_dict()
         else:
+            logging.warning(f"Deal with ID {deal_id} not found")
             return None
     
     except Exception as e:
         logging.error(f"Error retrieving deal by ID: {str(e)}")
+        raise
+
+
+# Search for deals based on destination, platform, or travel type
+def search_deal(destination=None, platform=None, travel_type=None):
+    try:
+        query = TravelDeal.query
+
+        if destination:
+            query = query.filter(
+                TravelDeal.destination.ilike(f"%{destination}%")
+            )
+
+        if platform:
+            query = query.filter(
+                TravelDeal.platform.ilike(f"%{platform}%")
+            )
+
+        if travel_type:
+            query = query.filter(
+                TravelDeal.travel_type.ilike(f"%{travel_type}%")
+            )
+
+        results = query.all()
+
+        logging.info(
+            f"Search completed. Found {len(results)} deals. "
+            f"destination={destination}, "
+            f"platform={platform}, "
+            f"travel_type={travel_type}"
+        )
+        return [deal.to_dict() for deal in results]
+
+    except Exception as e:
+        logging.error(f"Error searching deals: {e}")
         raise
