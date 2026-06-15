@@ -1,8 +1,8 @@
 import logging
 from flask import Blueprint, request, jsonify
-from services.deals_services import create_deal, get_all_deals, get_deal_by_id, search_deal
+from services.deals_services import create_deal, get_all_deals, get_deal_by_id, search_deal, filter_deals_by_price
 from utils.responses import error_response, success_response
-from utils.validation import validate_deal_data
+from utils.validation import validate_deal_data, validate_filter_params
 
 deal_bp = Blueprint("deals", __name__) 
 
@@ -107,3 +107,32 @@ def search_deals():
     
     except Exception as e:
         return error_response("An error occurred while searching for deals", 500)
+    
+
+
+# API Endpoint to filter travel deals based on price range
+@deal_bp.route("/filter", methods=["GET"])
+def filter_deals():
+    """
+    API Endpoint to filter travel deals based on price range.
+    Query parameters:
+        - min_price (optional): minimum price
+        - max_price (optional): maximum price
+    """
+    try:
+        min_price = request.args.get("min_price", type=float)
+        max_price = request.args.get("max_price", type=float)
+
+        is_valid, validation_message = validate_filter_params(min_price, max_price)
+
+        if not is_valid:
+            logging.warning(f"Filter validation failed: {validation_message}")
+            return error_response(validation_message, 400)
+
+        # Call the filter service function with the provided query parameters
+        deals = filter_deals_by_price(min_price, max_price)
+
+        return success_response(deals, "Filtered deals retrieved successfully", 200)
+
+    except Exception as e:
+        return error_response("An error occurred while filtering deals", 500)
