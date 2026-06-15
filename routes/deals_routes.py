@@ -1,8 +1,8 @@
 import logging
 from flask import Blueprint, request, jsonify
-from services.deals_services import create_deal, get_all_deals, get_deal_by_id, search_deal, filter_deals_by_price
+from services.deals_services import create_deal, get_all_deals, get_deal_by_id, search_deal, filter_deals_by_price, sort_deals_by_price
 from utils.responses import error_response, success_response
-from utils.validation import validate_deal_data, validate_filter_params
+from utils.validation import validate_deal_data, validate_filter_params, validate_sort_params
 
 deal_bp = Blueprint("deals", __name__) 
 
@@ -48,6 +48,7 @@ def add_deal():
     
 
 
+
 # API Endpoint to retrieve all travel deals
 @deal_bp.route("", methods=["GET"])
 def get_deals():
@@ -64,11 +65,14 @@ def get_deals():
     
     
 
+
 # API Endpoint to retrieve a specific travel deal by ID
 @deal_bp.route("/<int:deal_id>", methods=["GET"])
 def get_deal(deal_id):
     """
     API Endpoint to retrieve a specific travel deal by ID.
+    Path parameter:
+        - deal_id: ID of the travel deal to retrieve        
     """
     try:
         # Retrieve the deal using the service layer
@@ -82,6 +86,9 @@ def get_deal(deal_id):
         return error_response("An error occurred while retrieving the deal", 500)
     
 
+
+
+# API Endpoint to search for travel deals based on destination, platform, or travel type
 @deal_bp.route("/search", methods=["GET"])
 def search_deals():
     """
@@ -110,6 +117,7 @@ def search_deals():
     
 
 
+
 # API Endpoint to filter travel deals based on price range
 @deal_bp.route("/filter", methods=["GET"])
 def filter_deals():
@@ -136,3 +144,33 @@ def filter_deals():
 
     except Exception as e:
         return error_response("An error occurred while filtering deals", 500)
+    
+
+
+
+# API Endpoint to sort based on price
+@deal_bp.route("/sort", methods=["GET"])
+def sort_deals():
+    """
+    API Endpoint to sort travel deals based on price.
+    Query params:
+        - sort_by: field to sort by 
+        - order_by: asc or desc
+    """
+    try:
+        sort_by = request.args.get("sort_by")
+        order_by = request.args.get("order_by", "asc")
+
+        is_valid, validation_message = validate_sort_params(sort_by, order_by)
+
+        if not is_valid:
+            logging.warning(f"Sort validation failed: {validation_message}")
+            return error_response(validation_message, 400)
+        
+        # Call the sort service function with the provided query parameters
+        deals = sort_deals_by_price(sort_by, order_by)
+
+        return success_response(deals, "Sorted deals retrieved successfully", 200)
+    
+    except Exception as e:
+        return error_response("An error occurred while sorting deals", 500)

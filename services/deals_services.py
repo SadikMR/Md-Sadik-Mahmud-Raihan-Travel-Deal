@@ -2,6 +2,7 @@ import logging
 from database.db import db
 from database.deals_models import TravelDeal
 
+# Service function to create a new travel deal in the database
 def create_deal(data):
     """
     Creates a new travel deal in the database.
@@ -10,6 +11,7 @@ def create_deal(data):
     Returns:
         dict: A dictionary representation of the created travel deal.
     """
+
     try:
         new_deal = TravelDeal(
             destination=data['destination'],
@@ -31,12 +33,15 @@ def create_deal(data):
         raise
 
 
+
+# Service function to retrieve all travel deals from the database
 def get_all_deals():
     """
     Retrieves all travel deals from the database.
     Returns:
         list: A list of dictionaries, each representing a travel deal.
     """
+
     try:
         deals = TravelDeal.query.all()
         deal_list = []
@@ -53,6 +58,7 @@ def get_all_deals():
         raise
 
 
+
 # Additional service functions can be added here as needed, such as updating or deleting deals, or retrieving deals by specific criteria.
 def get_deal_by_id(deal_id):
     """
@@ -62,6 +68,7 @@ def get_deal_by_id(deal_id):
     Returns:
         dict: A dictionary representation of the travel deal if found, None otherwise.
     """
+
     try:
         deal = TravelDeal.query.get(deal_id)
 
@@ -77,8 +84,19 @@ def get_deal_by_id(deal_id):
         raise
 
 
+
 # Search for deals based on destination, platform, or travel type
 def search_deal(destination=None, platform=None, travel_type=None):
+    """
+    Search for deals based on destination, platform, or travel type.
+    Args:
+        destination (str, optional): The destination to search for.
+        platform (str, optional): The platform to search for.
+        travel_type (str, optional): The travel type to search for.
+    Returns:
+        list: A list of dictionaries.
+    """
+
     try:
         query = TravelDeal.query
 
@@ -112,7 +130,18 @@ def search_deal(destination=None, platform=None, travel_type=None):
         raise
 
 
+
+# Filter deals based on price range
 def filter_deals_by_price(min_price=None, max_price=None):
+    """
+    Filter deals based on price range.
+    Args:
+        min_price (float, optional): The minimum price to filter by.
+        max_price (float, optional): The maximum price to filter by.
+    Returns:
+        list: A list of dictionaries.
+    """
+
     try:
         query = TravelDeal.query
 
@@ -133,3 +162,37 @@ def filter_deals_by_price(min_price=None, max_price=None):
     except Exception as e:
         logging.error(f"Error filtering deals: {e}")
         raise
+
+
+
+# Sort deals based on price
+def sort_deals_by_price(sort_by = 'price', order_by="asc"):
+    """
+    Sort deals based on price.
+    Args: sort_by(str): The field to sort by (currently only supports 'price').
+        order_by (str): The order to sort by ('asc' for ascending, 'desc' for descending).
+    Returns: list: A list of dictionaries.
+    """
+
+    try:
+        query = TravelDeal.query
+
+        if sort_by == 'price':
+            if order_by == "desc":
+                query = query.order_by(TravelDeal.price.desc())
+            else:
+                query = query.order_by(TravelDeal.price.asc())
+        
+        results = query.all()
+
+        logging.info(
+            f"Sorting completed. Found {len(results)} deals. "
+            f"sort_by={sort_by}, order_by={order_by}"
+        )
+        return [deal.to_dict() for deal in results]
+        
+    except Exception as e:
+        logging.error(f"Error sorting deals: {e}")
+        raise
+
+

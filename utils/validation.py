@@ -62,3 +62,24 @@ def validate_filter_params(min_price, max_price):
         return False, "min_price cannot be greater than max_price"
     
     return True, None
+
+
+# Validation function for sorting parameters
+def validate_sort_params(sort_by, sort_order):
+    """
+    Validates the sorting parameters for deals.
+    Returns a tuple (is_valid, message) where:
+    - is_valid: True if parameters are valid, False otherwise
+    - message: Error message if parameters are invalid, None otherwise
+    """
+    
+    allowed_sort_by = ["price"]
+    allowed_sort_order = ["asc", "desc"]
+    
+    if sort_by and sort_by not in allowed_sort_by:
+        return False, f"sort_by must be one of: {', '.join(allowed_sort_by)}"
+    
+    if sort_order and sort_order not in allowed_sort_order:
+        return False, f"sort_order must be one of: {', '.join(allowed_sort_order)}"
+    
+    return True, None
