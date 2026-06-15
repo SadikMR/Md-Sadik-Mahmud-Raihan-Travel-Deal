@@ -1,6 +1,7 @@
 import logging
 from database.db import db
 from database.deals_models import TravelDeal
+from database.recent_viewed_deals import RecentViewedDeal
 
 # Service function to create a new travel deal in the database
 def create_deal(data):
@@ -74,6 +75,7 @@ def get_deal_by_id(deal_id):
 
         if deal:
             logging.info(f"Retrieved deal by ID {deal_id}: {deal.to_dict()}")
+            add_recent_viewed_deal(deal_id)
             return deal.to_dict()
         else:
             logging.warning(f"Deal with ID {deal_id} not found")
@@ -196,3 +198,50 @@ def sort_deals_by_price(sort_by = 'price', order_by="asc"):
         raise
 
 
+
+# services for adding to recent viewd deal. It's called automaticaly when user searched specific deal by id
+def add_recent_viewed_deal(deal_id):
+    """
+    Creates new recent viewed deal in recent viewd deals table
+    Args: deal_id(int): The field to identify specific deal
+    Returns: A dictionary represents deal
+    """
+    
+    try:
+        recent_viewed_deal = RecentViewedDeal(
+            deal_id = deal_id
+        )
+        db.session.add(recent_viewed_deal)
+        db.session.commit()
+
+        logging.info(f"Added to recent_viewed_deal")
+        return recent_viewed_deal.to_dict()
+    
+    except Exception as e:
+        logging.error(f"Error adding to recent_viewd_deal: {e}")
+        raise
+
+
+
+#Services for retrieving recent_viewed_deals
+def get_recent_viewed_deals():
+    """
+    Fetches all recent viewed deals based on views time
+    returns: A list of dictionary representing recent viewd deals
+    """
+
+    try:
+        recent_viewed_deals = (RecentViewedDeal.query.order_by(RecentViewedDeal.viewed_at.desc()).all())
+        deals = []
+
+        for recent_viewed_deal in recent_viewed_deals:
+            deal = TravelDeal.query.get(recent_viewed_deal.deal_id)
+            if(deal): 
+                deals.append(deal.to_dict())
+        
+        logging.info(f"Retrivied recent_viewd deals. Found {len(deals)}")
+        return deals
+    
+    except Exception as e:
+        logging.error(f"Error fetching recent viewed deals: {e}")
+        raise

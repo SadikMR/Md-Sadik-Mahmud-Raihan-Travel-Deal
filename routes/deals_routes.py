@@ -1,6 +1,6 @@
 import logging
 from flask import Blueprint, request, jsonify
-from services.deals_services import create_deal, get_all_deals, get_deal_by_id, search_deal, filter_deals_by_price, sort_deals_by_price
+from services.deals_services import create_deal, get_all_deals, get_deal_by_id, search_deal, filter_deals_by_price, sort_deals_by_price, get_recent_viewed_deals
 from utils.responses import error_response, success_response
 from utils.validation import validate_deal_data, validate_filter_params, validate_sort_params
 
@@ -174,3 +174,18 @@ def sort_deals():
     
     except Exception as e:
         return error_response("An error occurred while sorting deals", 500)
+
+
+
+@deal_bp.route("/recent", methods=["GET"])
+def recent_viewed_deals():
+    """
+    API Endpoint for fetch recent viewed deals
+    """
+
+    try:
+        recent_viewed_deals = get_recent_viewed_deals()
+        return success_response(recent_viewed_deals, "Recent veiwed deals retrieved successfully", 200)
+    
+    except Exception as e:
+        return error_response("An error occured while retrieving recent viewed deals", 500)
