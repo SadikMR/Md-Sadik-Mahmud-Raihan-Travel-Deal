@@ -4,6 +4,7 @@ from config import Config
 from database.db import db
 from database.deals_models import TravelDeal
 from routes.deals_routes import deal_bp
+import os
 
 
 
@@ -15,15 +16,17 @@ def create_app():
     
     # Load Config
     app.config.from_object(Config)
+
+    os.makedirs("logs", exist_ok=True)
     
     # Logging
     logging.basicConfig(
         level=logging.INFO,
-        format=(
-            "%(asctime)s - "
-            "%(levelname)s - "
-            "%(message)s"
-        ),
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        handlers=[
+            logging.FileHandler("logs/app.log"),
+            logging.StreamHandler()
+        ]
     )
     
     # Initialize DB
