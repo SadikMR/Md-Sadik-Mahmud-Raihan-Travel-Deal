@@ -82,7 +82,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/deals/search?destination=dha&platform=bk&travel_type=fam",
+					"raw": "http://localhost:5000/deals/search?destination=dha&platform=bo&travel_type=fam",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -99,7 +99,7 @@
 						},
 						{
 							"key": "platform",
-							"value": "bk"
+							"value": "bo"
 						},
 						{
 							"key": "travel_type",
