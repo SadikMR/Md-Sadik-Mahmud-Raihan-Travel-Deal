@@ -12,13 +12,21 @@ Postman: https://www.postman.com/sadikmr-6504980/workspace/travel-deal/collectio
 
 ## Features
 
-- **Add Travel Deals**: Create new travel deals with destination, price, platform, rating, and travel type
-- **Retrieve All Deals**: Fetch all available travel deals
-- **Get Deal by ID**: Retrieve specific deal details using its ID
-- **Data Validation**: Built-in validation for deal data
-- **SQLite Database**: Lightweight persistent storage
-- **Error Handling**: Comprehensive error handling and logging
-- **Health Check**: API health status endpoint
+## Features
+
+* **Add Travel Deals**: Create new travel deals with destination, price, platform, rating, and travel type
+* **Retrieve All Deals**: Fetch all available travel deals
+* **Get Deal by ID**: Retrieve specific deal details using its ID
+* **Search Deals**: Search deals by destination, platform, or travel type
+* **Filter Deals**: Filter deals by price range
+* **Sort Deals**: Sort deals by supported fields in ascending or descending order
+* **Recently Viewed Deals**: Track and retrieve recently viewed travel deals
+* **Data Validation**: Built-in validation for requests and query parameters
+* **Logging**: Request, validation, success, and error logging
+* **SQLite Database**: Lightweight persistent storage
+* **Error Handling**: Comprehensive error handling and logging
+* **Health Check**: API health status endpoint
+
 
 ## Prerequisites
 
@@ -89,29 +97,22 @@ python app.py
 
 The API will be available at `http://localhost:5000`
 
-### Verify the Server is Running
-
-```bash
-curl http://localhost:5000
-```
-
-Expected response:
-```json
-{
-  "message": "Travel Deal API Running"
-}
-```
-
 ## API Endpoints
 
 ### 1. Health Check
 
+**Endpoint:** `GET /`
+
+**Description:** Verify that the API is running.
+
 **Request:**
+
 ```bash
 curl http://localhost:5000
 ```
 
 **Response:**
+
 ```json
 {
   "message": "Travel Deal API Running"
@@ -124,14 +125,10 @@ curl http://localhost:5000
 
 **Endpoint:** `POST /deals`
 
-**Description:** Create a new travel deal
-
-**Request Headers:**
-```
-Content-Type: application/json
-```
+**Description:** Create a new travel deal.
 
 **Request Body:**
+
 ```json
 {
   "destination": "Paris",
@@ -142,20 +139,8 @@ Content-Type: application/json
 }
 ```
 
-**cURL Example:**
-```bash
-curl -X POST http://localhost:5000/deals \
-  -H "Content-Type: application/json" \
-  -d '{
-    "destination": "Paris",
-    "price": 899.99,
-    "platform": "Booking.com",
-    "rating": 4.8,
-    "travel_type": "Flight + Hotel"
-  }'
-```
-
 **Success Response (201 Created):**
+
 ```json
 {
   "data": {
@@ -167,15 +152,7 @@ curl -X POST http://localhost:5000/deals \
     "travel_type": "Flight + Hotel"
   },
   "message": "Success",
-  "status": 201
-}
-```
-
-**Error Response (400 Bad Request):**
-```json
-{
-  "message": "Missing required fields: destination, price",
-  "status": 400
+  "success": true
 }
 ```
 
@@ -185,37 +162,12 @@ curl -X POST http://localhost:5000/deals \
 
 **Endpoint:** `GET /deals`
 
-**Description:** Retrieve all travel deals
+**Description:** Retrieve all travel deals.
 
-**cURL Example:**
+**Request:**
+
 ```bash
 curl http://localhost:5000/deals
-```
-
-**Success Response (200 OK):**
-```json
-{
-  "data": [
-    {
-      "id": 1,
-      "destination": "Paris",
-      "price": 899.99,
-      "platform": "Booking.com",
-      "rating": 4.8,
-      "travel_type": "Flight + Hotel"
-    },
-    {
-      "id": 2,
-      "destination": "Tokyo",
-      "price": 1299.99,
-      "platform": "Expedia",
-      "rating": 4.9,
-      "travel_type": "Flight + Hotel"
-    }
-  ],
-  "message": "Deals retrieved successfully",
-  "status": 200
-}
 ```
 
 ---
@@ -224,128 +176,251 @@ curl http://localhost:5000/deals
 
 **Endpoint:** `GET /deals/<id>`
 
-**Description:** Retrieve a specific travel deal by its ID
+**Description:** Retrieve a specific travel deal by its ID.
 
-**cURL Example:**
+**Request:**
+
 ```bash
 curl http://localhost:5000/deals/1
 ```
 
-**Success Response (200 OK):**
+**Note:** Accessing a deal by ID automatically records it as a recently viewed deal.
+
+---
+
+### 5. Search Travel Deals
+
+**Endpoint:** `GET /deals/search`
+
+**Description:** Search travel deals by destination, platform, or travel type.
+
+**Query Parameters:**
+
+| Parameter   | Description           |
+| ----------- | --------------------- |
+| destination | Search by destination |
+| platform    | Search by platform    |
+| travel_type | Search by travel type |
+
+**Examples:**
+
+```bash
+curl "http://localhost:5000/deals/search?destination=dubai"
+```
+
+```bash
+curl "http://localhost:5000/deals/search?platform=booking"
+```
+
+```bash
+curl "http://localhost:5000/deals/search?travel_type=luxury"
+```
+
+**Features:**
+
+* Case-insensitive search
+* Partial matching support
+
+---
+
+### 6. Filter Travel Deals
+
+**Endpoint:** `GET /deals/filter`
+
+**Description:** Filter travel deals within a price range.
+
+**Query Parameters:**
+
+| Parameter | Description   |
+| --------- | ------------- |
+| min_price | Minimum price |
+| max_price | Maximum price |
+
+**Example:**
+
+```bash
+curl "http://localhost:5000/deals/filter?min_price=1000&max_price=5000"
+```
+
+**Validation Rules:**
+
+* `min_price` cannot be negative
+* `max_price` cannot be smaller than `min_price`
+
+---
+
+### 7. Sort Travel Deals
+
+**Endpoint:** `GET /deals/sort`
+
+**Description:** Sort travel deals.
+
+**Query Parameters:**
+
+| Parameter | Description      |
+| --------- | ---------------- |
+| sort_by   | Field to sort by |
+| order     | asc or desc      |
+
+**Example:**
+
+```bash
+curl "http://localhost:5000/deals/sort?sort_by=price&order=asc"
+```
+
+```bash
+curl "http://localhost:5000/deals/sort?sort_by=price&order=desc"
+```
+
+**Validation Rules:**
+
+* Invalid sorting fields return HTTP 400
+* Invalid sort order returns HTTP 400
+
+---
+
+### 8. Get Recently Viewed Deals
+
+**Endpoint:** `GET /deals/recent`
+
+**Description:** Retrieve the most recently viewed travel deals.
+
+**Request:**
+
+```bash
+curl http://localhost:5000/deals/recent
+```
+
+**Response Example:**
+
 ```json
 {
-  "data": {
-    "id": 1,
-    "destination": "Paris",
-    "price": 899.99,
-    "platform": "Booking.com",
-    "rating": 4.8,
-    "travel_type": "Flight + Hotel"
-  },
-  "message": "Deal retrieved successfully",
-  "status": 200
+  "data": [
+    {
+      "id": 6,
+      "destination": "Dubai",
+      "price": 5000.0,
+      "platform": "Booking",
+      "rating": 4.5,
+      "travel_type": "Luxury"
+    }
+  ],
+  "message": "Recent viewed deals retrieved successfully",
+  "success": true
 }
 ```
 
-**Error Response (404 Not Found):**
-```json
-{
-  "message": "Deal not found",
-  "status": 404
-}
-```
+Returns the most recently viewed deals ordered by latest view time.
+
+---
 
 ## Usage Examples
 
-### Example 1: Create Multiple Travel Deals
+### Create a Travel Deal
 
 ```bash
-# Deal 1: Paris
 curl -X POST http://localhost:5000/deals \
-  -H "Content-Type: application/json" \
-  -d '{
-    "destination": "Paris",
-    "price": 899.99,
-    "platform": "Booking.com",
-    "rating": 4.8,
-    "travel_type": "Flight + Hotel"
-  }'
-
-# Deal 2: Tokyo
-curl -X POST http://localhost:5000/deals \
-  -H "Content-Type: application/json" \
-  -d '{
-    "destination": "Tokyo",
-    "price": 1299.99,
-    "platform": "Expedia",
-    "rating": 4.9,
-    "travel_type": "Flight + Hotel"
-  }'
-
-# Deal 3: New York
-curl -X POST http://localhost:5000/deals \
-  -H "Content-Type: application/json" \
-  -d '{
-    "destination": "New York",
-    "price": 599.50,
-    "platform": "Kayak",
-    "rating": 4.7,
-    "travel_type": "Flight Only"
-  }'
+-H "Content-Type: application/json" \
+-d '{
+  "destination":"Paris",
+  "price":899.99,
+  "platform":"Booking.com",
+  "rating":4.8,
+  "travel_type":"Flight + Hotel"
+}'
 ```
 
-### Example 2: Retrieve All Deals
+### Search Deals
 
 ```bash
-curl http://localhost:5000/deals | python -m json.tool
+curl "http://localhost:5000/deals/search?destination=dubai"
 ```
 
-### Example 3: Retrieve a Specific Deal
+### Filter Deals
 
 ```bash
-# Get deal with ID 2
-curl http://localhost:5000/deals/2 | python -m json.tool
+curl "http://localhost:5000/deals/filter?min_price=1000&max_price=5000"
 ```
 
-### Example 4: Test Error Handling
+### Sort Deals
 
 ```bash
-# Missing required fields
-curl -X POST http://localhost:5000/deals \
-  -H "Content-Type: application/json" \
-  -d '{
-    "destination": "London",
-    "price": 750.00
-  }'
-
-# Response:
-# {
-#   "message": "Missing required fields: platform, rating, travel_type",
-#   "status": 400
-# }
+curl "http://localhost:5000/deals/sort?sort_by=price&order=desc"
 ```
+
+### View a Deal
+
+```bash
+curl http://localhost:5000/deals/1
+```
+
+### View Recently Viewed Deals
+
+```bash
+curl http://localhost:5000/deals/recent
+```
+
 
 ## Project Structure
 
-```
+```text
 travel-deal/
-├── app.py                    # Application entry point
-├── config.py                 # Application configuration
-├── requirements.txt          # Python dependencies
-├── README.md                 # This file
+├── app.py                         # Application entry point
+├── config.py                      # Application configuration
+├── requirements.txt               # Python dependencies
+├── README.md                      # Project documentation
+├── .gitignore
 ├── database/
-│   ├── db.py                # Database initialization
-│   └── deals_models.py       # SQLAlchemy models
+│   ├── db.py                      # Database initialization
+│   ├── deals_models.py            # TravelDeal model
+│   └── recent_deals_models.py     # RecentViewedDeal model
 ├── routes/
-│   └── deals_routes.py       # API route handlers
+│   └── deals_routes.py            # API route handlers
 ├── services/
-│   └── deals_services.py     # Business logic
+│   └── deals_services.py          # Business logic layer
 ├── utils/
-│   ├── responses.py          # Response formatting utilities
-│   └── validation.py         # Data validation utilities
+│   ├── responses.py               # Standardized API responses
+│   └── validation.py              # Request validation utilities
+├── logs/
+│   └── app.log                    # Application logs (auto-generated)
 └── instance/
-    └── travel_deals.db       # SQLite database (auto-generated)
+    └── travel_deals.db            # SQLite database (auto-generated)
 ```
+
+
+## Logging
+
+The application uses Python's built-in `logging` module to track application activities and errors.
+
+### Logged Events
+
+* Search requests
+* Invalid requests and validation failures
+* Successful operations
+* Failed API requests and exceptions
+
+### Log Levels
+
+* `logging.info()` – Successful operations and request tracking
+* `logging.warning()` – Invalid requests and validation issues
+* `logging.error()` – Unexpected errors and failures
+
+### Log File
+
+Application logs are written to:
+
+```text
+logs/app.log
+```
+
+Example:
+
+```text
+2026-06-15 17:45:10,123 - INFO - Search request received
+2026-06-15 17:45:11,456 - WARNING - Empty search request
+2026-06-15 17:45:12,789 - ERROR - Error searching deals
+```
+
 
 ## Required Fields for Travel Deals
 
@@ -359,13 +434,6 @@ When creating a travel deal, ensure all required fields are provided:
 | `rating` | Float | 4.8 |
 | `travel_type` | String | "Flight + Hotel" |
 
-## Testing
-
-To run tests (if available):
-
-```bash
-pytest
-```
 
 ## Troubleshooting
 
@@ -412,4 +480,3 @@ All API responses follow a consistent format:
 ```
 ---
 
-**Last Updated:** June 2026

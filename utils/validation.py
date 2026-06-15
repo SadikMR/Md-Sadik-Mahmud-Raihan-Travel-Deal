@@ -75,6 +75,9 @@ def validate_sort_params(sort_by, sort_order):
     
     allowed_sort_by = ["price"]
     allowed_sort_order = ["asc", "desc"]
+
+    if not sort_by:
+        return False, "sort_by parameter is required"
     
     if sort_by and sort_by not in allowed_sort_by:
         return False, f"sort_by must be one of: {', '.join(allowed_sort_by)}"
