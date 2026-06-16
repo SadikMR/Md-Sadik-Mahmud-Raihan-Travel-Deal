@@ -4,6 +4,7 @@ from config import Config
 from database.db import db
 from database.deals_models import TravelDeal
 from routes.deals_routes import deal_bp
+from routes.stats_routes import stats_bp
 import os
 
 
@@ -34,6 +35,7 @@ def create_app():
 
     # Register Blueprints
     app.register_blueprint(deal_bp, url_prefix="/deals")
+    app.register_blueprint(stats_bp, url_prefix="/stats")
     
     
     @app.route("/")

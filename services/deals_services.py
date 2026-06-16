@@ -2,6 +2,7 @@ import logging
 from database.db import db
 from database.deals_models import TravelDeal
 from database.recent_viewed_deals import RecentViewedDeal
+from services.stats_services import track_search
 
 # Service function to create a new travel deal in the database
 def create_deal(data):
@@ -162,6 +163,9 @@ def search_deal(destination=None, platform=None, travel_type=None):
     """
 
     try:
+        
+        track_search(destination)
+
         query = TravelDeal.query
 
         if destination:
@@ -322,6 +326,26 @@ def get_most_popular_deals():
         logging.info("Retrieved most 5 popular deals successfully")
 
         return [deal.to_dict() for deal in deals]
+    
+    except Exception as e:
+        logging.error(f"Error occured while retrieving most popular deals: {e} ")
+        raise 
+
+
+
+
+#service for retriving most viewed deal
+def get_most_viewed_deal():
+    """
+    Fetches deals based on most view counts
+    """
+
+    try:
+        deal = TravelDeal.query.order_by(TravelDeal.view_count.desc()).first()
+
+        logging.info("Retrieved most viewed deals successfully")
+
+        return deal
     
     except Exception as e:
         logging.error(f"Error occured while retrieving most popular deals: {e} ")

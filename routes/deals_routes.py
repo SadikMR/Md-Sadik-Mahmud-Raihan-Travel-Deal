@@ -1,6 +1,7 @@
 import logging
 from flask import Blueprint, request, jsonify
 from services.deals_services import create_deal, get_all_deals, get_deal_by_id, search_deal, filter_deals_by_price, sort_deals_by_price, get_recent_viewed_deals, update_deal, delete_deal, get_most_popular_deals
+from services.stats_services import track_api_request
 from utils.responses import error_response, success_response
 from utils.validation import validate_deal_data, validate_filter_params, validate_sort_params
 
@@ -32,12 +33,13 @@ def add_deal():
         
         # Create the deal using the service layer
         new_deal = create_deal(data)
+        track_api_request(success=True)
         return success_response(new_deal, "Created deal successfully", 201)
     
     except Exception as e:
+        track_api_request(success=False)
         return error_response("An error occurred while adding the deal", 500) 
     
-
 
 
 # API Endpoint to retrieve all travel deals
@@ -49,13 +51,14 @@ def get_deals():
     try:
         # Retrieve all deals using the service layer
         deals = get_all_deals()
+        track_api_request(success=True)
         return success_response(deals, "Deals retrieved successfully", 200)
     
     except Exception as e:
+        track_api_request(success=False)
         return error_response("An error occurred while retrieving the deals", 500)
     
     
-
 
 # API Endpoint to retrieve a specific travel deal by ID
 @deal_bp.route("/<int:deal_id>", methods=["GET"])
@@ -69,15 +72,16 @@ def get_deal(deal_id):
     try:
         # Retrieve the deal using the service layer
         deal = get_deal_by_id(deal_id)
+        track_api_request(success=True)
         if not deal:
             return error_response("Deal not found", 404)
         
         return success_response(deal, "Deal retrieved successfully", 200)
     
     except Exception as e:
+        track_api_request(success=False)
         return error_response("An error occurred while retrieving the deal", 500)
     
-
 
 
 @deal_bp.route("/<int:deal_id>", methods=["PUT"])
@@ -97,14 +101,17 @@ def update(deal_id):
 
         # calling service for updating deal
         updated_deal_data = update_deal(data, deal_id)
+        track_api_request(success=True)
 
         return success_response(updated_deal_data, "Updated deal successfully", 200)
 
     except ValueError as e:
+        track_api_request(success=False)
         return error_response(str(e), 404)
 
     except Exception as e:
         logging.error(f"Error updating deal: {e}")
+        track_api_request(success=False)
         return error_response(
             "An error occurred while updating the deal",
             500
@@ -120,13 +127,18 @@ def delete(deal_id):
     """
     try:
         deleted_deal = delete_deal(deal_id)
+
+        track_api_request(success=True)
+
         return success_response(deleted_deal, "Deleted deal successfully", 200)
     
     except ValueError as e:
+        track_api_request(success=False)
         return error_response(str(e), 404)
     
     except Exception as e:
         logging.error(f"Error deleting deal: {e}")
+        track_api_request(success=False)
         return error_response(
             "An error occurred while deleting the deal",
             500
@@ -157,9 +169,12 @@ def search_deals():
         # Call the search service function with the provided query parameters
         deals = search_deal(destination, platform, travel_type)
 
+        track_api_request(success=True)
+
         return success_response(deals, "searching deals retrieved successfully", 200)
     
     except Exception as e:
+        track_api_request(success=False)
         return error_response("An error occurred while searching for deals", 500)
 
 
@@ -187,9 +202,12 @@ def filter_deals():
         # Call the filter service function with the provided query parameters
         deals = filter_deals_by_price(min_price, max_price)
 
+        track_api_request(success=True)
+
         return success_response(deals, "Filtered deals retrieved successfully", 200)
 
     except Exception as e:
+        track_api_request(success=False)
         return error_response("An error occurred while filtering deals", 500)
     
 
@@ -217,9 +235,12 @@ def sort_deals():
         # Call the sort service function with the provided query parameters
         deals = sort_deals_by_price(sort_by, order_by)
 
+        track_api_request(success=True)
+
         return success_response(deals, "Sorted deals retrieved successfully", 200)
     
     except Exception as e:
+        track_api_request(success=False)
         return error_response("An error occurred while sorting deals", 500)
 
 
@@ -232,9 +253,13 @@ def recent_viewed_deals():
 
     try:
         recent_viewed_deals = get_recent_viewed_deals()
+
+        track_api_request(success=True)
+
         return success_response(recent_viewed_deals, "Recent veiwed deals retrieved successfully", 200)
     
     except Exception as e:
+        track_api_request(success=False)
         return error_response("An error occured while retrieving recent viewed deals", 500)
     
 
@@ -248,7 +273,10 @@ def most_popular_deal():
     try:
         deals = get_most_popular_deals()
 
+        track_api_request(success=True)
+
         return success_response(deals, "Retrieved most 5 popular deals successfully", 200)
     
     except Exception as e:
+        track_api_request(success=False)
         return error_response("An error occured while retrieving popular deals", 500)
