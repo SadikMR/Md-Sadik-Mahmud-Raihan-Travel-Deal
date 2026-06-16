@@ -1,7 +1,6 @@
 import logging
 from database.db import db
-from database.deals_models import TravelDeal
-from database.recent_viewed_deals import RecentViewedDeal
+from database.deals_models import TravelDeal, RecentViewedDeal
 from services.stats_services import track_search
 
 # Service function to create a new travel deal in the database
