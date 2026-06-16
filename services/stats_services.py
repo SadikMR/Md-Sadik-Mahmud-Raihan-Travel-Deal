@@ -3,7 +3,7 @@ from database.db import db
 from database.stats_models import SearchAnalytics, ApiMetrics
 from database.deals_models import TravelDeal
 
-# works as service for the endpoint /stats
+# works as service for the endpoint (GET /stats)
 def get_statistics():
     """
     Retrieves application statistics.
@@ -86,13 +86,6 @@ def track_api_request(success=True):
         if not metrics:
             metrics = ApiMetrics()
             db.session.add(metrics)
-
-        metrics = ApiMetrics.query.first()
-
-        print(metrics)
-        print(metrics.total_requests)
-        print(metrics.successful_requests)
-        print(metrics.failed_requests)
 
         metrics.total_requests += 1
 
