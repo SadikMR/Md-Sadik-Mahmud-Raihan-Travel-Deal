@@ -74,8 +74,12 @@ def get_deal_by_id(deal_id):
         deal = TravelDeal.query.get(deal_id)
 
         if deal:
+            deal.view_count += 1
             logging.info(f"Retrieved deal by ID {deal_id}: {deal.to_dict()}")
             add_recent_viewed_deal(deal_id)
+
+            db.session.commit()
+
             return deal.to_dict()
         else:
             logging.warning(f"Deal with ID {deal_id} not found")
@@ -307,3 +311,18 @@ def get_recent_viewed_deals():
 
 
 
+def get_most_popular_deals():
+    """
+    Fetches deals based on most view counts
+    """
+
+    try:
+        deals = TravelDeal.query.order_by(TravelDeal.view_count.desc()).limit(5).all()
+
+        logging.info("Retrieved most 5 popular deals successfully")
+
+        return [deal.to_dict() for deal in deals]
+    
+    except Exception as e:
+        logging.error(f"Error occured while retrieving most popular deals: {e} ")
+        raise 

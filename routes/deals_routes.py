@@ -1,6 +1,6 @@
 import logging
 from flask import Blueprint, request, jsonify
-from services.deals_services import create_deal, get_all_deals, get_deal_by_id, search_deal, filter_deals_by_price, sort_deals_by_price, get_recent_viewed_deals, update_deal, delete_deal
+from services.deals_services import create_deal, get_all_deals, get_deal_by_id, search_deal, filter_deals_by_price, sort_deals_by_price, get_recent_viewed_deals, update_deal, delete_deal, get_most_popular_deals
 from utils.responses import error_response, success_response
 from utils.validation import validate_deal_data, validate_filter_params, validate_sort_params
 
@@ -236,3 +236,19 @@ def recent_viewed_deals():
     
     except Exception as e:
         return error_response("An error occured while retrieving recent viewed deals", 500)
+    
+
+
+@deal_bp.route("/popular", methods=["GET"])
+def most_popular_deal():
+    """
+    API Endpoint for fetching most popular deals
+    """
+
+    try:
+        deals = get_most_popular_deals()
+
+        return success_response(deals, "Retrieved most 5 popular deals successfully", 200)
+    
+    except Exception as e:
+        return error_response("An error occured while retrieving popular deals", 500)

@@ -43,7 +43,13 @@ class TravelDeal(db.Model):
         db.String(255), 
         nullable=False
     )
-    
+
+    view_count = db.Column(
+        db.Integer,
+        default=0,
+        nullable=False
+    )
+        
     def to_dict(self):
         """
         Converts the TravelDeal object to a dictionary.
@@ -56,5 +62,6 @@ class TravelDeal(db.Model):
             'price': self.price,
             'platform': self.platform,
             'rating': self.rating,
-            'travel_type': self.travel_type
+            'travel_type': self.travel_type,
+            'view_count': self.view_count
         }
