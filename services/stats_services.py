@@ -3,7 +3,7 @@ from database.db import db
 from database.stats_models import SearchAnalytics, ApiMetrics
 from database.deals_models import TravelDeal
 
-
+# works as service for the endpoint /stats
 def get_statistics():
     """
     Retrieves application statistics.
@@ -71,6 +71,7 @@ def get_statistics():
         raise
 
 
+# Function that stores data in api_metrices 
 def track_api_request(success=True):
     """
     Track API usage statistics.
@@ -108,7 +109,7 @@ def track_api_request(success=True):
         raise
 
 
-
+# Helping service for storing in service_stats model
 def track_search(search_term):
     """
     Track search terms for analytics.

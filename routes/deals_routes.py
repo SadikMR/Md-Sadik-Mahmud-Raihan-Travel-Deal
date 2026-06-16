@@ -245,6 +245,7 @@ def sort_deals():
 
 
 
+#API Endpoint to retrieve recent delas
 @deal_bp.route("/recent", methods=["GET"])
 def recent_viewed_deals():
     """
@@ -263,7 +264,7 @@ def recent_viewed_deals():
         return error_response("An error occured while retrieving recent viewed deals", 500)
     
 
-
+#API Endpoint to retrieve popular delas
 @deal_bp.route("/popular", methods=["GET"])
 def most_popular_deal():
     """

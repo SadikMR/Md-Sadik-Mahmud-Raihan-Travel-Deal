@@ -288,7 +288,7 @@ def add_recent_viewed_deal(deal_id):
 
 
 
-#Services for retrieving recent_viewed_deals
+# Services for retrieving recent_viewed_deals
 def get_recent_viewed_deals():
     """
     Fetches all recent viewed deals based on views time
@@ -313,7 +313,7 @@ def get_recent_viewed_deals():
 
 
 
-
+# Service for retrieving most popular deals from - /popular
 def get_most_popular_deals():
     """
     Fetches deals based on most view counts
@@ -333,7 +333,7 @@ def get_most_popular_deals():
 
 
 
-#service for retriving most viewed deal
+# service for retriving most viewed deal 
 def get_most_viewed_deal():
     """
     Fetches deals based on most view counts
