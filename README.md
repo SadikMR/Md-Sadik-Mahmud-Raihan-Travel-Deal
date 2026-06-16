@@ -8,19 +8,51 @@ GitHub: [https://github.com/SadikMR/travel-deal](https://github.com/SadikMR/trav
 
 ## Postman Collection
 
-Postman: https://www.postman.com/sadikmr-6504980/workspace/travel-deal/collection/54705650-20ced9a1-6a96-4d25-82c6-65cff1d454d5?action=share&source=copy-link&creator=54705650
+Postman: https://www.postman.com/sadikmr-6504980/workspace/travel-deal/collection/54705650-12047859-dbd4-4e8b-970d-ec8cc2348b59?action=share&source=collection_link&creator=54705650
 
-## Features
+### Using the Postman Collection
+
+1. **Import the Collection**
+   - Open Postman and click "Import"
+   - Copy and paste the collection link or download the `Travel-Deals.postman_collection.json` file
+   - The collection will be imported with all pre-configured endpoints
+
+2. **Set Base URL Variable**
+   - The collection uses a `{{base_url}}` variable (default: `http://localhost:5000`)
+   - Go to Collections → Travel-Deals → Variables
+   - Update the `base_url` value if your API runs on a different host/port
+
+3. **Replace Path Parameters**
+   - Endpoints with `:id` (e.g., `GET /deals/:id`, `PUT /deals/:id`, `DELETE /deals/:id`)
+   - Replace `:id` with an actual deal ID (e.g., `1`, `2`, etc.)
+   - In Postman, these are typically configured as path variables
+
+4. **Make API Requests**
+   - All 12 endpoints are organized in the collection
+   - Click on any endpoint to view its details
+   - Modify request bodies and query parameters as needed
+   - Click "Send" to execute the request
+
+5. **Available Endpoints**
+   - Health Check
+   - CRUD Operations (Create, Read, Update, Delete)
+   - Search, Filter, and Sort
+   - Recently Viewed Deals
+   - Most Popular Deals
+   - Statistics
 
 ## Features
 
 * **Add Travel Deals**: Create new travel deals with destination, price, platform, rating, and travel type
 * **Retrieve All Deals**: Fetch all available travel deals
 * **Get Deal by ID**: Retrieve specific deal details using its ID
+* **Update Deals**: Update existing travel deal information
+* **Delete Deals**: Remove travel deals from the system
 * **Search Deals**: Search deals by destination, platform, or travel type
 * **Filter Deals**: Filter deals by price range
 * **Sort Deals**: Sort deals by supported fields in ascending or descending order
 * **Recently Viewed Deals**: Track and retrieve recently viewed travel deals
+* **Most Popular Deals**: Retrieve the top popular deals based on view counts or popularity metrics
 * **Data Validation**: Built-in validation for requests and query parameters
 * **Logging**: Request, validation, success, and error logging
 * **SQLite Database**: Lightweight persistent storage
@@ -135,9 +167,11 @@ curl http://localhost:5000
   "price": 899.99,
   "platform": "Booking.com",
   "rating": 4.8,
-  "travel_type": "Flight + Hotel"
+  "travel_type": "Luxury"
 }
 ```
+
+**Allowed Travel Types:** Budget, Luxury, Family, Adventure
 
 **Success Response (201 Created):**
 
@@ -149,7 +183,7 @@ curl http://localhost:5000
     "price": 899.99,
     "platform": "Booking.com",
     "rating": 4.8,
-    "travel_type": "Flight + Hotel"
+    "travel_type": "Luxury"
   },
   "message": "Success",
   "success": true
@@ -178,6 +212,9 @@ curl http://localhost:5000/deals
 
 **Description:** Retrieve a specific travel deal by its ID.
 
+**Path Parameter:**
+- `<id>`: The ID of the deal to retrieve (replace with an actual deal ID, e.g., 1)
+
 **Request:**
 
 ```bash
@@ -188,19 +225,111 @@ curl http://localhost:5000/deals/1
 
 ---
 
-### 5. Search Travel Deals
+### 5. Update a Travel Deal
+
+**Endpoint:** `PUT /deals/<id>`
+
+**Description:** Update an existing travel deal by its ID.
+
+**Path Parameter:**
+- `<id>`: The ID of the deal to update (replace with an actual deal ID, e.g., 1)
+
+**Request Body:**
+
+```json
+{
+  "destination": "Paris",
+  "price": 879.99,
+  "platform": "Booking.com",
+  "rating": 4.9,
+  "travel_type": "Luxury"
+}
+```
+
+**Allowed Travel Types:** Budget, Luxury, Family, Adventure
+
+**Success Response (200 OK):**
+
+```json
+{
+  "data": {
+    "id": 1,
+    "destination": "Paris",
+    "price": 879.99,
+    "platform": "Booking.com",
+    "rating": 4.9,
+    "travel_type": "Luxury"
+  },
+  "message": "Updated deal successfully",
+  "success": true
+}
+```
+
+**Request:**
+
+```bash
+curl -X PUT http://localhost:5000/deals/1 \
+-H "Content-Type: application/json" \
+-d '{
+  "destination": "Paris",
+  "price": 879.99,
+  "platform": "Booking.com",
+  "rating": 4.9,
+  "travel_type": "Luxury"
+}'
+```
+
+---
+
+### 6. Delete a Travel Deal
+
+**Endpoint:** `DELETE /deals/<id>`
+
+**Description:** Delete a travel deal by its ID.
+
+**Path Parameter:**
+- `<id>`: The ID of the deal to delete (replace with an actual deal ID, e.g., 1)
+
+**Request:**
+
+```bash
+curl -X DELETE http://localhost:5000/deals/1
+```
+
+**Success Response (200 OK):**
+
+```json
+{
+  "data": {
+    "id": 1,
+    "destination": "Paris",
+    "price": 879.99,
+    "platform": "Booking.com",
+    "rating": 4.9,
+    "travel_type": "Flight + Hotel"
+  },
+  "message": "Deleted deal successfully",
+  "success": true
+}
+```
+
+---
+
+### 7. Search Travel Deals
 
 **Endpoint:** `GET /deals/search`
 
 **Description:** Search travel deals by destination, platform, or travel type.
 
-**Query Parameters:**
+**Query Parameters:** (At least one required)
 
-| Parameter   | Description           |
-| ----------- | --------------------- |
-| destination | Search by destination |
-| platform    | Search by platform    |
-| travel_type | Search by travel type |
+| Parameter   | Type   | Required | Description           |
+| ----------- | ------ | -------- | --------------------- |
+| destination | String | Optional | Search by destination |
+| platform    | String | Optional | Search by platform    |
+| travel_type | String | Optional | Search by travel type |
+
+**Note:** At least one of the above parameters must be provided.
 
 **Examples:**
 
@@ -223,18 +352,20 @@ curl "http://localhost:5000/deals/search?travel_type=luxury"
 
 ---
 
-### 6. Filter Travel Deals
+### 8. Filter Travel Deals
 
 **Endpoint:** `GET /deals/filter`
 
 **Description:** Filter travel deals within a price range.
 
-**Query Parameters:**
+**Query Parameters:** (Optional, at least one recommended)
 
-| Parameter | Description   |
-| --------- | ------------- |
-| min_price | Minimum price |
-| max_price | Maximum price |
+| Parameter | Type  | Required | Description   |
+| --------- | ----- | -------- | ------------- |
+| min_price | Float | Optional | Minimum price |
+| max_price | Float | Optional | Maximum price |
+
+**Note:** Both parameters are optional, but at least one should be provided for filtering results.
 
 **Example:**
 
@@ -246,10 +377,11 @@ curl "http://localhost:5000/deals/filter?min_price=1000&max_price=5000"
 
 * `min_price` cannot be negative
 * `max_price` cannot be smaller than `min_price`
+* Both must be valid numbers
 
 ---
 
-### 7. Sort Travel Deals
+### 9. Sort Travel Deals
 
 **Endpoint:** `GET /deals/sort`
 
@@ -257,29 +389,30 @@ curl "http://localhost:5000/deals/filter?min_price=1000&max_price=5000"
 
 **Query Parameters:**
 
-| Parameter | Description      |
-| --------- | ---------------- |
-| sort_by   | Field to sort by |
-| order     | asc or desc      |
+| Parameter | Type   | Required | Allowed Values | Description      |
+| --------- | ------ | -------- | -------------- | ---------------- |
+| sort_by   | String | **Yes**  | price          | Field to sort by |
+| order_by  | String | Optional | asc, desc      | Sort order (default: asc) |
 
-**Example:**
+**Examples:**
 
 ```bash
-curl "http://localhost:5000/deals/sort?sort_by=price&order=asc"
+curl "http://localhost:5000/deals/sort?sort_by=price&order_by=asc"
 ```
 
 ```bash
-curl "http://localhost:5000/deals/sort?sort_by=price&order=desc"
+curl "http://localhost:5000/deals/sort?sort_by=price&order_by=desc"
 ```
 
 **Validation Rules:**
 
+* `sort_by` parameter is **required**
 * Invalid sorting fields return HTTP 400
 * Invalid sort order returns HTTP 400
 
 ---
 
-### 8. Get Recently Viewed Deals
+### 10. Get Recently Viewed Deals
 
 **Endpoint:** `GET /deals/recent`
 
@@ -314,6 +447,69 @@ Returns the most recently viewed deals ordered by latest view time.
 
 ---
 
+### 11. Get Most Popular Deals
+
+**Endpoint:** `GET /deals/popular`
+
+**Description:** Retrieve the most popular travel deals.
+
+**Request:**
+
+```bash
+curl http://localhost:5000/deals/popular
+```
+
+**Response Example:**
+
+```json
+{
+  "data": [
+    {
+      "id": 2,
+      "destination": "Paris",
+      "price": 899.99,
+      "platform": "Booking.com",
+      "rating": 4.9,
+      "travel_type": "Flight + Hotel"
+    }
+  ],
+  "message": "Retrieved most 5 popular deals successfully",
+  "success": true
+}
+```
+
+Returns the top popular deals, typically the most viewed or highest ranked.
+
+---
+
+### 12. Get Statistics
+
+**Endpoint:** `GET /stats`
+
+**Description:** Retrieve application statistics including API usage metrics.
+
+**Request:**
+
+```bash
+curl http://localhost:5000/stats
+```
+
+**Response Example:**
+
+```json
+{
+  "data": {
+    "total_api_requests": 45,
+    "successful_requests": 42,
+    "failed_requests": 3
+  },
+  "message": "Statistics retrieved successfully",
+  "success": true
+}
+```
+
+---
+
 ## Usage Examples
 
 ### Create a Travel Deal
@@ -326,7 +522,7 @@ curl -X POST http://localhost:5000/deals \
   "price":899.99,
   "platform":"Booking.com",
   "rating":4.8,
-  "travel_type":"Flight + Hotel"
+  "travel_type":"Luxury"
 }'
 ```
 
@@ -360,6 +556,38 @@ curl http://localhost:5000/deals/1
 curl http://localhost:5000/deals/recent
 ```
 
+### Update a Deal
+
+```bash
+curl -X PUT http://localhost:5000/deals/1 \
+-H "Content-Type: application/json" \
+-d '{
+  "destination": "Paris",
+  "price": 879.99,
+  "platform": "Booking.com",
+  "rating": 4.9,
+  "travel_type": "Flight + Hotel"
+}'
+```
+
+### Delete a Deal
+
+```bash
+curl -X DELETE http://localhost:5000/deals/1
+```
+
+### View Most Popular Deals
+
+```bash
+curl http://localhost:5000/deals/popular
+```
+
+### View Statistics
+
+```bash
+curl http://localhost:5000/stats
+```
+
 
 ## Project Structure
 
@@ -369,15 +597,18 @@ travel-deal/
 ├── config.py                      # Application configuration
 ├── requirements.txt               # Python dependencies
 ├── README.md                      # Project documentation
+├── Travel-Deals.postman_collection.json  # Postman API collection
 ├── .gitignore
 ├── database/
 │   ├── db.py                      # Database initialization
 │   ├── deals_models.py            # TravelDeal model
-│   └── recent_deals_models.py     # RecentViewedDeal model
+│   └── stats_models.py            # Statistics model
 ├── routes/
-│   └── deals_routes.py            # API route handlers
+│   ├── deals_routes.py            # Deals API route handlers
+│   └── stats_routes.py            # Statistics API route handlers
 ├── services/
-│   └── deals_services.py          # Business logic layer
+│   ├── deals_services.py          # Deals business logic layer
+│   └── stats_services.py          # Statistics business logic layer
 ├── utils/
 │   ├── responses.py               # Standardized API responses
 │   └── validation.py              # Request validation utilities
@@ -431,8 +662,8 @@ When creating a travel deal, ensure all required fields are provided:
 | `destination` | String | "Paris" |
 | `price` | Float | 899.99 |
 | `platform` | String | "Booking.com" |
-| `rating` | Float | 4.8 |
-| `travel_type` | String | "Flight + Hotel" |
+| `rating` | Float | 4.8 (1-5) |
+| `travel_type` | String | "Luxury" (Budget, Luxury, Family, Adventure) |
 
 
 ## Troubleshooting

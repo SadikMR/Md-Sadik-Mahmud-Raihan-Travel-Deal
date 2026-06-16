@@ -1,15 +1,33 @@
 {
 	"info": {
-		"_postman_id": "20ced9a1-6a96-4d25-82c6-65cff1d454d5",
+		"_postman_id": "12047859-dbd4-4e8b-970d-ec8cc2348b59",
 		"name": "Travel-Deals",
-		"description": "## Travel Deals API\n\nThis collection provides a set of RESTful API endpoints for managing travel deals. It is designed to support core CRUD operations against a local Travel Deals service running at `http://localhost:5000`.\n\n### Endpoints Included\n\n- **Create a Deal** — `POST /deals`  \n  Submit a new travel deal to the system.\n\n- **Get All Deals** — `GET /deals`  \n  Retrieve a complete list of all available travel deals.\n\n- **Get a Single Deal** — `GET /deals/:id`  \n  Fetch the details of a specific travel deal by its unique identifier.\n\n### Usage\n\nUse this collection to develop, test, and validate the Travel Deals API during local development. Ensure the server is running on `http://localhost:5000` before sending requests.",
+		"description": "Travel Deals API collection for local development and testing.\n\nBase URL: {{base_url}}\n\nIncludes all available API endpoints for deals, recent views, statistics, and health checks.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "54705650",
-		"_collection_link": "https://www.postman.com/sadikmr-6504980/workspace/travel-deal/collection/54705650-20ced9a1-6a96-4d25-82c6-65cff1d454d5?action=share&source=collection_link&creator=54705650"
+		"_collection_link": "https://www.postman.com/sadikmr-6504980/workspace/travel-deal/collection/54705650-12047859-dbd4-4e8b-970d-ec8cc2348b59?action=share&source=collection_link&creator=54705650"
 	},
 	"item": [
 		{
-			"name": "Create_Deals",
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						""
+					]
+				},
+				"description": "Verify that the Travel Deal API is running."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Deal",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -21,7 +39,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\"destination\": \"Dubai\",\n\"price\": 5000,\n\"platform\": \"Booking\",\n\"rating\": 4.5,\n\"travel_type\": \"Luxury\"\n}\n",
+					"raw": "{\n  \"destination\": \"Paris\",\n  \"price\": 899.99,\n  \"platform\": \"Booking.com\",\n  \"rating\": 4.8,\n  \"travel_type\": \"Luxury\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -29,17 +47,15 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/deals",
-					"protocol": "http",
+					"raw": "{{base_url}}/deals",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "5000",
 					"path": [
 						"deals"
 					]
 				},
-				"description": "Endpoint for creating deals"
+				"description": "Create a new travel deal. Allowed travel_type values: Budget, Luxury, Family, Adventure."
 			},
 			"response": []
 		},
@@ -48,46 +64,116 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"description": "Endpoint for fetching all deals"
-			},
-			"response": []
-		},
-		{
-			"name": "Get Single Deal",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "GET",
-				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/deals/1",
-					"protocol": "http",
+					"raw": "{{base_url}}/deals",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "5000",
 					"path": [
-						"deals",
-						"1"
+						"deals"
 					]
 				},
-				"description": "Get specific deal by id"
+				"description": "Retrieve all available travel deals."
 			},
 			"response": []
 		},
 		{
-			"name": "Search Deal",
+			"name": "Get Deal by ID",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/deals/search?destination=dha&platform=bo&travel_type=fam",
-					"protocol": "http",
+					"raw": "{{base_url}}/deals/:id",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "5000",
+					"path": [
+						"deals",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id"
+						}
+					]
+				},
+				"description": "Retrieve a single travel deal by its ID. Replace :id with the deal identifier."
+			},
+			"response": []
+		},
+		{
+			"name": "Update Deal",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"destination\": \"Paris\",\n  \"price\": 879.99,\n  \"platform\": \"Booking.com\",\n  \"rating\": 4.9,\n  \"travel_type\": \"Luxury\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/deals/:id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"deals",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id"
+						}
+					]
+				},
+				"description": "Update an existing travel deal by ID. Replace :id with the deal identifier. Allowed travel_type values: Budget, Luxury, Family, Adventure."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Deal",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/deals/:id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"deals",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id"
+						}
+					]
+				},
+				"description": "Delete a travel deal by ID. Replace :id with the deal identifier."
+			},
+			"response": []
+		},
+		{
+			"name": "Search Deals",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/deals/search?destination=Paris&platform=Booking.com&travel_type=Luxury",
+					"host": [
+						"{{base_url}}"
+					],
 					"path": [
 						"deals",
 						"search"
@@ -95,34 +181,32 @@
 					"query": [
 						{
 							"key": "destination",
-							"value": "dha"
+							"value": "Paris"
 						},
 						{
 							"key": "platform",
-							"value": "bo"
+							"value": "Booking.com"
 						},
 						{
 							"key": "travel_type",
-							"value": "fam"
+							"value": "Luxury"
 						}
 					]
 				},
-				"description": "Endpoint for searching. It supports partial searching"
+				"description": "Search deals by destination, platform, or travel type. Any single or combination of query params is accepted. Allowed travel_type values: Budget, Luxury, Family, Adventure."
 			},
 			"response": []
 		},
 		{
-			"name": "Filter Deal",
+			"name": "Filter Deals",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/deals/filter?min_price=1&max_price=10000",
-					"protocol": "http",
+					"raw": "{{base_url}}/deals/filter?min_price=100&max_price=3000",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "5000",
 					"path": [
 						"deals",
 						"filter"
@@ -130,30 +214,28 @@
 					"query": [
 						{
 							"key": "min_price",
-							"value": "1"
+							"value": "100"
 						},
 						{
 							"key": "max_price",
-							"value": "10000"
+							"value": "3000"
 						}
 					]
 				},
-				"description": "Filter based on price range"
+				"description": "Filter deals using min_price and/or max_price query parameters."
 			},
 			"response": []
 		},
 		{
-			"name": "Sort Deal",
+			"name": "Sort Deals",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/deals/sort?sort_by=price&order_by=desc",
-					"protocol": "http",
+					"raw": "{{base_url}}/deals/sort?sort_by=price&order_by=desc",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "5000",
 					"path": [
 						"deals",
 						"sort"
@@ -169,30 +251,72 @@
 						}
 					]
 				},
-				"description": "Sort deals based on price and order"
+				"description": "Sort deals by field and order. Supported order values are asc or desc."
 			},
 			"response": []
 		},
 		{
-			"name": "Recen Viewed Deals",
+			"name": "Recent Viewed Deals",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/deals/recent",
-					"protocol": "http",
+					"raw": "{{base_url}}/deals/recent",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "5000",
 					"path": [
 						"deals",
 						"recent"
 					]
 				},
-				"description": "Fetches recent viewed deals"
+				"description": "Retrieve the most recently viewed travel deals."
 			},
 			"response": []
+		},
+		{
+			"name": "Most Popular Deals",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/deals/popular",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"deals",
+						"popular"
+					]
+				},
+				"description": "Retrieve the top 5 most popular travel deals."
+			},
+			"response": []
+		},
+		{
+			"name": "Statistics",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/stats",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"stats"
+					]
+				},
+				"description": "Fetch application statistics."
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000",
+			"type": "string"
 		}
 	]
 }
