@@ -1,6 +1,6 @@
 import logging
 from flask import Blueprint, request, jsonify
-from services.deals_services import create_deal, get_all_deals, get_deal_by_id, search_deal, filter_deals_by_price, sort_deals_by_price, get_recent_viewed_deals, update_deal
+from services.deals_services import create_deal, get_all_deals, get_deal_by_id, search_deal, filter_deals_by_price, sort_deals_by_price, get_recent_viewed_deals, update_deal, delete_deal
 from utils.responses import error_response, success_response
 from utils.validation import validate_deal_data, validate_filter_params, validate_sort_params
 
@@ -113,6 +113,28 @@ def update(deal_id):
 
 
 
+@deal_bp.route("/<int:deal_id>", methods=["DELETE"])
+def delete(deal_id):
+    """
+    API Endpoint for deleting any deal
+    """
+    try:
+        deleted_deal = delete_deal(deal_id)
+        return success_response(deleted_deal, "Deleted deal successfully", 200)
+    
+    except ValueError as e:
+        return error_response(str(e), 404)
+    
+    except Exception as e:
+        logging.error(f"Error deleting deal: {e}")
+        return error_response(
+            "An error occurred while deleting the deal",
+            500
+        ) 
+        
+
+
+
 # API Endpoint to search for travel deals based on destination, platform, or travel type
 @deal_bp.route("/search", methods=["GET"])
 def search_deals():
@@ -139,7 +161,7 @@ def search_deals():
     
     except Exception as e:
         return error_response("An error occurred while searching for deals", 500)
-    
+
 
 
 
