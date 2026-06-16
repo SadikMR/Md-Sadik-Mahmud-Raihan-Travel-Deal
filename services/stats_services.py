@@ -1,7 +1,6 @@
 import logging
 from database.db import db
-from database.search_analytics import SearchAnalytics
-from database.api_metrics import ApiMetrics
+from database.stats_models import SearchAnalytics, ApiMetrics
 from database.deals_models import TravelDeal
 
 
