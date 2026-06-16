@@ -1,6 +1,6 @@
 import logging
 from flask import Blueprint, request, jsonify
-from services.deals_services import create_deal, get_all_deals, get_deal_by_id, search_deal, filter_deals_by_price, sort_deals_by_price, get_recent_viewed_deals
+from services.deals_services import create_deal, get_all_deals, get_deal_by_id, search_deal, filter_deals_by_price, sort_deals_by_price, get_recent_viewed_deals, update_deal
 from utils.responses import error_response, success_response
 from utils.validation import validate_deal_data, validate_filter_params, validate_sort_params
 
@@ -23,15 +23,6 @@ def add_deal():
     try:
         data = request.get_json(silent=True) 
 
-        if not data:
-            return error_response("No JSON payload provided", 400)
-        
-        required_fields = ["destination", "price", "platform", "rating", "travel_type"]
-        
-        missing_fields = [field for field in required_fields if field not in data]
-        if missing_fields:
-            return error_response(f"Missing required fields: {', '.join(missing_fields)}", 400)
-
         # Validate incoming data
         is_valid, validation_message = validate_deal_data(data)
 
@@ -41,7 +32,7 @@ def add_deal():
         
         # Create the deal using the service layer
         new_deal = create_deal(data)
-        return success_response(new_deal, 201)
+        return success_response(new_deal, "Created deal successfully", 201)
     
     except Exception as e:
         return error_response("An error occurred while adding the deal", 500) 
@@ -74,6 +65,7 @@ def get_deal(deal_id):
     Path parameter:
         - deal_id: ID of the travel deal to retrieve        
     """
+
     try:
         # Retrieve the deal using the service layer
         deal = get_deal_by_id(deal_id)
@@ -84,6 +76,39 @@ def get_deal(deal_id):
     
     except Exception as e:
         return error_response("An error occurred while retrieving the deal", 500)
+    
+
+
+
+@deal_bp.route("/<int:deal_id>", methods=["PUT"])
+def update(deal_id):
+    """
+    API Endpoint to update a specific deal
+    """
+
+    try:
+        data = request.get_json(silent=True)
+
+        is_valid, validation_message = validate_deal_data(data)
+
+        if not is_valid:
+            logging.warning(f"Validation failed: {validation_message}")
+            return error_response(validation_message, 400)
+
+        # calling service for updating deal
+        updated_deal_data = update_deal(data, deal_id)
+
+        return success_response(updated_deal_data, "Updated deal successfully", 200)
+
+    except ValueError as e:
+        return error_response(str(e), 404)
+
+    except Exception as e:
+        logging.error(f"Error updating deal: {e}")
+        return error_response(
+            "An error occurred while updating the deal",
+            500
+        ) 
     
 
 

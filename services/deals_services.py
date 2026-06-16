@@ -245,3 +245,34 @@ def get_recent_viewed_deals():
     except Exception as e:
         logging.error(f"Error fetching recent viewed deals: {e}")
         raise
+
+
+
+# Update a specific deal information
+def update_deal(data, deal_id):
+    """
+    Update any specific deal
+    Args: data(Dictionary): Data that needs to be updated
+        deal_id(int): An id to identify specific deal
+    Returns: A dictionary representating updated deal
+    """ 
+    try:
+        deal = TravelDeal.query.get(deal_id)
+        if not deal:
+            logging.warning("There is no deal exists with this id")
+            raise ValueError("Travel deal not found")
+
+        deal.destination = data["destination"]
+        deal.price = data["price"]
+        deal.platform = data["platform"]
+        deal.rating = data["rating"]
+        deal.travel_type = data["travel_type"]
+
+        db.session.commit()
+        logging.info("Successfully updated deal")
+
+        return deal.to_dict()
+
+    except Exception as e:
+        logging.error(f"Error while updating deal: {e}")
+        raise

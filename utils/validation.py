@@ -7,6 +7,16 @@ def validate_deal_data(data):
     - message: Error message if data is invalid, None otherwise
     """
 
+    if not data:
+            return False, "No JSON payload provided"
+        
+    required_fields = ["destination", "price", "platform", "rating", "travel_type"]
+        
+    missing_fields = [field for field in required_fields if field not in data]
+
+    if missing_fields:
+            return False, f"Missing required fields: {', '.join(missing_fields)}"
+
     allowed_travel_types = ["Budget", "Luxury", "Family", "Adventure"]
     
     price = data.get("price")
